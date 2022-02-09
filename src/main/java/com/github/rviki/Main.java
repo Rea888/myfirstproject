@@ -29,8 +29,10 @@ public class Main {
                 String fileContent;
                 try {
                     ScannerWrapper scannerWrapper = new ScannerWrapper(filePath);
-                    fileContent = scannerWrapper.reader();
+                    scannerWrapper.reader();
+                    fileContent= scannerWrapper.getEventByDate(message.substring(message.indexOf(" ")+1,20));
 
+                    //fileContent= scannerWrapper.getEventByDate("2022-05-05");
                 } catch (FileNotFoundException e){
                     fileContent = "No one has wrote yet";
 
