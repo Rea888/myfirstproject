@@ -3,8 +3,6 @@ package com.github.rviki;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
-import java.io.FileNotFoundException;
-
 
 public class Main {
 
@@ -15,43 +13,15 @@ public class Main {
         DiscordApi api = new DiscordApiBuilder().setToken(token).login().join();
 
         String filePath = "C:\\Users\\mrakh\\IdeaProjects\\myfirstbot\\src\\input\\Eskuvo.txt";
-        WriterWrapper writerWrapper;
+        ActionWrapper actionWrapper;
         try {
-            writerWrapper = new WriterWrapper(filePath);
+            actionWrapper = new ActionWrapper(new WriterWrapper(filePath), new ScannerWrapper(filePath));
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
-
-        api.addMessageCreateListener(event -> {
-            String message = event.getMessageContent();
-            if (message.startsWith("!remindme ")) {
-                String fileContent;
-                try {
-                    ScannerWrapper scannerWrapper = new ScannerWrapper(filePath);
-                    scannerWrapper.reader();
-                    fileContent= scannerWrapper.getEventByDate(message.substring(message.indexOf(" ")+1,20));
-
-                    //fileContent= scannerWrapper.getEventByDate("2022-05-05");
-                } catch (FileNotFoundException e){
-                    fileContent = "No one has wrote yet";
-
-                } catch (Exception e) {
-                    fileContent = "Error occurred: " + e.getMessage();
-                    e.printStackTrace();
-                }
-                message = message.substring(message.indexOf(" ") + 1);
-                String str = String.format("%s%n", message);
-                writerWrapper.write(str);
-                event.getChannel().sendMessage(fileContent);
-            }
-
-        });
-
+        api.addMessageCreateListener(actionWrapper::receiveEvent);
         // Print the invite url of your bot
         System.out.println("You can invite the bot by using the following url: " + api.createBotInvite());
-
     }
-
-
 }
