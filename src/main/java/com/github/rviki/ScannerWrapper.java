@@ -17,7 +17,6 @@ public class ScannerWrapper {
 
     public void reader() throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(filePath));
-        String line = null;
         this.events = new ArrayList<>();
         while (scanner.hasNextLine()) {
             events.add(scanner.nextLine());
@@ -32,9 +31,9 @@ public class ScannerWrapper {
     }
 
     public String getEventByDate(String date) {
-        for (int i = 0; i < events.size(); i++) {
-            if (events.get(i).startsWith(date)) {
-                return events.get(i);
+        for (String event : events) {
+            if (event.startsWith(date)) {
+                return event;
             }
         }
         return "Not found";
